@@ -46,25 +46,26 @@ const Home = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${selectedSign}&day=${selectedDay}`
+        `https://api.allorigins.win/get?url=${encodeURIComponent(
+          `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${selectedSign}&day=${selectedDay}`
+        )}`
       );
       if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error(
-            "Boss Atleast select a zodiac sign and day to view horoscope."
-          );
-        } else {
-          throw new Error("An error occurred. Please try again.");
-        }
+        throw new Error("An error occurred. Please try again.");
       }
       const data = await response.json();
-      setHoroscope(data.data);
+      const parsedData = JSON.parse(data.contents);
+      if (parsedData.status !== 200) {
+        throw new Error(
+          "Boss Atleast select a zodiac sign and day to view horoscope."
+        );
+      }
+      setHoroscope(parsedData.data);
     } catch (error) {
       setError(error.message || "Failed to fetch horoscope. Please try again.");
     }
     setLoading(false);
   };
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 flex flex-col items-center">
       <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-300 mb-6">
