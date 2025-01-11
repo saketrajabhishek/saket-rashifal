@@ -31,7 +31,7 @@ const zodiacSigns = [
   { name: "pisces", icon: <GiPisces /> },
 ];
 
-const days = ["YESTERDAY", "TODAY", "TOMORROW"];
+const days = ["YESTERDAY", "TODAY", "TOMORROW", "WEEKLY"];
 
 const Home = () => {
   const [selectedSign, setSelectedSign] = useState(null);
@@ -49,11 +49,15 @@ const Home = () => {
     setHoroscope(null);
     setLoading(true);
     try {
-      const response = await fetch(
-        `https://api.allorigins.win/get?url=${encodeURIComponent(
-          `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${selectedSign}&day=${selectedDay}`
-        )}`
-      );
+      const url =
+        selectedDay === "WEEKLY"
+          ? `https://api.allorigins.win/get?url=${encodeURIComponent(
+              `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/weekly?sign=${selectedSign}`
+            )}`
+          : `https://api.allorigins.win/get?url=${encodeURIComponent(
+              `https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${selectedSign}&day=${selectedDay}`
+            )}`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("An error occurred. Please try again.");
       }
@@ -148,7 +152,9 @@ const Home = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <h3 className="text-2xl font-bold mb-4">{horoscope.date}</h3>
+          <h3 className="text-2xl font-bold mb-4">
+            {horoscope.date || horoscope.week}
+          </h3>
           <p className="whitespace-pre-line">{horoscope.horoscope_data}</p>
         </motion.div>
       )}
