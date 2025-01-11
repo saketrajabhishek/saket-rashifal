@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   GiAries,
@@ -40,6 +40,10 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    setHoroscope(null);
+  }, [selectedSign, selectedDay]);
+
   const fetchHoroscope = async () => {
     setError(null);
     setHoroscope(null);
@@ -66,6 +70,7 @@ const Home = () => {
     }
     setLoading(false);
   };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 flex flex-col items-center">
       <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 dark:text-blue-300 mb-6">
